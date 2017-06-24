@@ -2,12 +2,21 @@ package hello;
 
 import java.sql.*;
 
-public class User {
-	private String dbUrl = "jdbc:mysql://127.0.0.1:3306/hello?characterEncoding=utf8&useSSL=false";// 根据实际情况变化
+public class User extends Thread{
+	private String dbUrl = "jdbc:mysql://127.0.0.1:3306/hello?characterEncoding=utf8&useSSL=false";// 鏍规嵁瀹為檯鎯呭喌鍙樺寲
 	private String dbUser = "root";
 	private String dbPass = "root";
+	private String[]data;
 
-	public int insert(String[] data) {
+	public void run()
+	{
+		insert();
+	}
+	public User(String []data)
+	{
+		this.data = data;
+	}
+	public int insert() {
 		int i = 0;
 		String sql = "INSERT INTO `users`(`student_id`, `student_name`, `major`, `department`, `class`, `nation`, `place_of_origin`, `date_of_birth`, `political_outlook`, `id_card`, `examinee_number`, `cell_phone_number`, `password`) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		Connection cnn = getConn();
@@ -63,7 +72,7 @@ public class User {
 		return rs;
 	}
 
-	public Connection getConn() {
+	private Connection getConn() {
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
