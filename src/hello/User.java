@@ -2,6 +2,10 @@ package hello;
 
 import java.sql.*;
 
+/**
+ * Created by Sunlong on 2017/6/24.
+ */
+
 public class User extends Thread{
 	private String dbUrl = "jdbc:mysql://127.0.0.1:3306/hello?characterEncoding=utf8&useSSL=false";// 根据实际情况变化
 	private String dbUser = "root";

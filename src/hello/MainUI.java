@@ -3,7 +3,6 @@ package hello;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 /**
  * Created by Sunlong on 2017/6/23.

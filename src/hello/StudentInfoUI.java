@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by Sunlong on 2017/6/23.
+ * Created by Sunlong on 2017/6/25.
  */
 
 public class StudentInfoUI extends JFrame implements ActionListener {
