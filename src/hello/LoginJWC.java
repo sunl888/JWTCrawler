@@ -1,6 +1,8 @@
 package hello;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.regex.*;
 import org.jsoup.Connection.Response;
@@ -26,11 +28,6 @@ class LoginJWC extends Thread{
 	}
 
 	public void run() {
-		/*try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
 		getStudentInfo();
 	}
 
@@ -45,40 +42,73 @@ class LoginJWC extends Thread{
 	}
 
 	private void getStudentInfo() {
+		Boolean hasRecord = false;
 		String []student = new String[14];
-		loginJWC();
-		Document doc = null;
+		ResultSet userInfo = new User().getStudent(this.stuNum);
 		try {
-			doc = Jsoup.connect(studentInfoUri)
-                    .userAgent("Mozilla")
-                    .cookies(cookies)
-                    .timeout(0)
-                    .get();
-		} catch (IOException e) {
+			while(userInfo.next())
+			{
+				student[1] = userInfo.getString(1);
+				student[2] = userInfo.getString(2);
+				student[3] = userInfo.getString(3);
+				student[4] = userInfo.getString(4);
+				student[5] = userInfo.getString(5);
+				student[6] = userInfo.getString(6);
+				student[7] = userInfo.getString(7);
+				student[8] = userInfo.getString(8);
+				student[9] = userInfo.getString(9);
+				student[10] = userInfo.getString(10);
+				student[11] = userInfo.getString(11);
+				student[12] = userInfo.getString(12);
+				student[13] = userInfo.getString(13);
+				hasRecord = true;
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				userInfo.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		Matcher m = Pattern.compile(this.regularExpression).matcher(doc.toString());
-		while (m.find()) {
-			student[1]  = m.group("stuNum");// 學號
-			student[2]  = m.group("stuName");// 姓名
-			student[3]  = m.group("major"); // 专业
-			student[4]  = m.group("department"); // 系别
-			student[5]  = m.group("class"); // 班级
-			student[6]  = m.group("familyName"); // 民族
-			student[7]  = m.group("place");// 籍貫
-			student[8]  = m.group("birth");// 出生日期
-			student[9]  = m.group("politicalStatus");// 政治面貌
-			student[10] = m.group("idcard");// 身份證號碼
-			student[11] = m.group("examineeNumber");// 高考考生號
-			student[12] = m.group("phone");// 手機號
-			student[13] = m.group("jwtPassword");// 教務處密碼
+		//数据库里没有数据
+		if(!hasRecord){
+			loginJWC();
+			Document doc = null;
+			try {
+				doc = Jsoup.connect(studentInfoUri)
+						.userAgent("Mozilla")
+						.cookies(cookies)
+						.timeout(0)
+						.get();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Matcher m = Pattern.compile(this.regularExpression).matcher(doc.toString());
+			while (m.find()) {
+				student[1]  = m.group("stuNum");// 學號
+				student[2]  = m.group("stuName");// 姓名
+				student[3]  = m.group("major"); // 专业
+				student[4]  = m.group("department"); // 系别
+				student[5]  = m.group("class"); // 班级
+				student[6]  = m.group("familyName"); // 民族
+				student[7]  = m.group("place");// 籍貫
+				student[8]  = m.group("birth");// 出生日期
+				student[9]  = m.group("politicalStatus");// 政治面貌
+				student[10] = m.group("idcard");// 身份證號碼
+				student[11] = m.group("examineeNumber");// 高考考生號
+				student[12] = m.group("phone");// 手機號
+				student[13] = m.group("jwtPassword");// 教務處密碼
+			}
+			if (student[1] == null) {
+				JOptionPane.showMessageDialog(null, "没有找到该学生");
+				System.exit(0);
+			}else{
+				User user = new User(student);
+				user.start();
+			}
 		}
-		if (student[1] == null) {
-			JOptionPane.showMessageDialog(null, "没有找到该学生");
-		}else{
-			User user = new User(student);
-			user.start();
-			stu.refreshData(student);
-		}
+		stu.refreshData(student);
 	}
 }

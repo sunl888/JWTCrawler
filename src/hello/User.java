@@ -12,10 +12,15 @@ public class User extends Thread{
 	{
 		insert();
 	}
+	public User(){
+
+	}
+
 	public User(String []data)
 	{
 		this.data = data;
 	}
+
 	public int insert() {
 		int i = 0;
 		String sql = "INSERT INTO `users`(`student_id`, `student_name`, `major`, `department`, `class`, `nation`, `place_of_origin`, `date_of_birth`, `political_outlook`, `id_card`, `examinee_number`, `cell_phone_number`, `password`) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -60,14 +65,6 @@ public class User extends Thread{
 			rs = stmt.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				cnn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				cnn = null;
-			}
 		}
 		return rs;
 	}

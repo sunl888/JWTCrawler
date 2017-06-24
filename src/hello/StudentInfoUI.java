@@ -27,8 +27,8 @@ public class StudentInfoUI extends JFrame implements ActionListener {
     }
     public StudentInfoUI(){
         this.setLayout(null);
-        title = new JLabel("学生信息");
-        title.setBounds(LEFT*3,10,100,100);
+        title = new JLabel("学生信息查询");
+        title.setBounds(LEFT*3,10,200,100);
         title.setFont(new Font("黑体",Font.BOLD,24));
         add(title);
 
@@ -124,7 +124,6 @@ public class StudentInfoUI extends JFrame implements ActionListener {
         this.setSize(480,500);
         this.setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent event){
         //这里暂时不用写
