@@ -17,7 +17,7 @@ public class User extends Thread{
 		insert();
 	}
 	public User(){
-
+		super();
 	}
 
 	public User(String []data)

@@ -27,13 +27,14 @@ class LoginJWC extends Thread {
 
     LoginJWC(String stuNum, String idCard) {
         stu = new StudentInfoUI();
-        this.stuNum = "1508220224";
-        this.idCard = "340881199507175311";
+        this.stuNum = stuNum;
+        this.idCard = idCard;
         //启动一个线程获取学生信息
         this.start();
     }
 
     public void run() {
+        //获取学生信息
         getStudentInfo();
     }
 
@@ -50,6 +51,7 @@ class LoginJWC extends Thread {
     private void getStudentInfo() {
         Boolean hasRecord = false;
         String[] student = new String[14];
+        //判断数据库里有没有该学生信息
         ResultSet userInfo = new User().getStudent(this.stuNum);
         try {
             while (userInfo.next()) {
@@ -108,12 +110,15 @@ class LoginJWC extends Thread {
             }
             if (student[1] == null) {
                 JOptionPane.showMessageDialog(null, "sorry,没有找到该学生");
-                System.exit(0);
+                stu.dispose();//关闭当前页面
+                new MainUI();
+                
             } else {
                 User user = new User(student);
                 user.start();
             }
         }
+        //刷新视图
         stu.refreshData(student);
     }
 }

@@ -14,6 +14,7 @@ public class StudentInfoUI extends JFrame implements ActionListener {
     private JLabel politicalStatus,idcard,phone,examineeNumber,jwtPassword;// 政治面貌，身份證，手機號碼, 高考考生號，教務處密碼
     private JLabel stuNumValue,stuNameValue,departmentValue,majorValue,classesValue,familyNameValue,placeValue,birthValue;
     private JLabel politicalStatusValue,idcardValue,phoneValue,examineeNumberValue,jwtPasswordValue;
+    private JButton reQuery;
     private JLabel title;
     private final int LEFT = 60;// 到左边界的距离
     private final int TOP = 100;
@@ -22,9 +23,6 @@ public class StudentInfoUI extends JFrame implements ActionListener {
     private final int HEIGHT = 40;// 字段高度
     private final int DISTANCE = 10; // 两列之间的距离
 
-    public static void main(String []args){
-        new StudentInfoUI();
-    }
     public StudentInfoUI(){
         this.setLayout(null);
         title = new JLabel("学生信息查询");
@@ -59,7 +57,7 @@ public class StudentInfoUI extends JFrame implements ActionListener {
         add(majorValue);
 
         classes = new JLabel("班级：");
-        classes.setBounds(LEFT,TOP+100,TITLEWIDTH,HEIGHT);
+        classes.setBounds(LEFT,TOP+100,TITLEWIDTH*2,HEIGHT);
         add(classes);
         classesValue = new JLabel("");
         classesValue.setBounds(LEFT+TITLEWIDTH,TOP+100,FILEDWIDTH,HEIGHT);
@@ -116,20 +114,36 @@ public class StudentInfoUI extends JFrame implements ActionListener {
         jwtPasswordValue = new JLabel("");
         jwtPasswordValue.setBounds(LEFT+TITLEWIDTH*2,TOP+300,FILEDWIDTH*2,HEIGHT);
         add(jwtPasswordValue);
+        
+        reQuery = new JButton("重新查询");
+        reQuery.setBounds(LEFT+TITLEWIDTH*2+FILEDWIDTH,TOP+300,FILEDWIDTH-30,HEIGHT);
+        reQuery.addActionListener(this);
+        reQuery.setFocusable(false);
+        add(reQuery);
 
-        //居中显示
-        this.setLocationRelativeTo(null);
+        this.setSize(480,500);
+        //TODO 这里必须要先设置窗口的尺寸才可以居中
+        setCenter(this);//or this.setLocationRelativeTo(null);
         this.setResizable(false);//不显示最大化按钮
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(480,500);
         this.setVisible(true);
+    }
+    //窗口居中
+    private void setCenter(JFrame form){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width-form.getWidth())/2;
+        int y = (screenSize.height-form.getHeight())/2;
+        form.setLocation(x,y);
     }
 
     public void actionPerformed(ActionEvent event){
-        //这里暂时不用写
+        if(event.getSource() ==reQuery){
+            this.dispose();
+            new MainUI();
+        }
     }
 
-    public void refreshData(String[] data)
+    protected void refreshData(String[] data)
     {
         stuNumValue.setText(data[1]);
         stuNameValue.setText(data[2]);
