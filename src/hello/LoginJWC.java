@@ -21,21 +21,23 @@ import javax.swing.JOptionPane;
  */
 
 class LoginJWC extends Thread {
-    private final String studentInfoUri = "http://211.70.176.123/wap/grxx.asp";
-    private final String loginUri = "http://211.70.176.123/wap/index.asp";
-    private final String photoUri = "http://211.70.176.123/dbsdb/tp.asp?xh=";
+    public final String studentInfoUri = "http://211.70.176.123/wap/grxx.asp";
+    public final String loginUri = "http://211.70.176.123/wap/index.asp";
+    public final String photoUri = "http://211.70.176.123/dbsdb/tp.asp?xh=";
+    public final String PHOTOPATH = "./photos/";
+    public final String EXT = ".png";
+    public final String regularExpression = "<font color=\"red\">(?<stuName>.+)</font><font[\\s\\S]+?专业[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<stuNum>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<major>.*)</td>[\\s\\S]+?班级</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<department>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<class>.*)</td>[\\s\\S]+?籍贯</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<familyName>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<place>.*)</td>[\\s\\S]+?政治面貌</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<birth>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<politicalStatus>.*)</td>[\\s\\S]+?高考考生号</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<idcard>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<examineeNumber>.*)</td>[\\s\\S]+?教务系统登陆密码</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<phone>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<jwtPassword>.*)</td>";
+    private Map<String, String> cookies = null;
     private String stuNum = "";
     private String idCard = "";
-    private String regularExpression = "<font color=\"red\">(?<stuName>.+)</font><font[\\s\\S]+?专业[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<stuNum>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<major>.*)</td>[\\s\\S]+?班级</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<department>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<class>.*)</td>[\\s\\S]+?籍贯</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<familyName>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<place>.*)</td>[\\s\\S]+?政治面貌</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<birth>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<politicalStatus>.*)</td>[\\s\\S]+?高考考生号</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<idcard>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<examineeNumber>.*)</td>[\\s\\S]+?教务系统登陆密码</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<phone>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<jwtPassword>.*)</td>";
-    private Map<String, String> cookies = null;
-    StudentInfoUI stu = null;
+    private StudentInfoUI stu = null;
 
     LoginJWC(String stuNum, String idCard) {
         stu = new StudentInfoUI();
-        this.stuNum = stuNum;
-        this.idCard = idCard;
-        //this.stuNum = "1508220224";
-        //this.idCard = "340881199507175311";
+        //this.stuNum = stuNum;
+        //this.idCard = idCard;
+        this.stuNum = "1508220224";
+        this.idCard = "340881199507175311";
         //启动一个线程获取学生信息
         this.start();
     }
@@ -125,35 +127,40 @@ class LoginJWC extends Thread {
                 user.start();
             }
         }
+        //刷新视图
+        stu.refreshData(student);
         //抓取图片
         try {
             downloadImage();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //刷新视图
-        stu.refreshData(student);
     }
 
     private void downloadImage() throws IOException {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         OutputStream out = null;
         InputStream in = null;
-        File filePath = new File("./photos/" + stuNum + ".png");
+        File filePath = new File(PHOTOPATH+stuNum+EXT);
         System.out.println(filePath);
         URL url = new URL(photoUri + stuNum);
         HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
         httpUrlConnection.setRequestProperty("User-Agent", "Mozilla");
-        //TODO 这里不用带cookie也可以通过
+        //TODO 这里不用带cookie也可以
         //httpUrlConnection.addRequestProperty("Cookie",cookies.toString());
         if (500 == httpUrlConnection.getResponseCode()) {
             in = httpUrlConnection.getErrorStream();
             out = new BufferedOutputStream(new FileOutputStream(filePath));
-
             for (int b; (b = in.read()) != -1; ) {
                 out.write(b);
             }
             in.close();
             out.close();
+            stu.refreshImage(PHOTOPATH+stuNum+EXT);
         }
 
     }

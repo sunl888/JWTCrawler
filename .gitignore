@@ -1,3 +1,8 @@
+#忽略用户头像除了default.png
+/photos/*.png
+!photos/default.png
+
+
 # Compiled class file
 *.class
 
@@ -19,10 +24,11 @@
 *.zip
 *.tar.gz
 *.rar
-/photos/*.png
 .classpath
 /.settings
 /.project
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /bin/
+out/
+photos/
