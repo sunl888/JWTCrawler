@@ -1,4 +1,4 @@
-package hello;
+package com.sunlong;
 
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -28,8 +28,6 @@ class LoginJWC extends Thread {
         stu = new StudentInfoUI();
         this.stuNum = stuNum;
         this.idCard = idCard;
-        //启动一个线程获取学生信息
-        this.start();
     }
 
     public void run() {
@@ -98,7 +96,6 @@ class LoginJWC extends Thread {
         //刷新视图
         stu.refreshData(student);
         //抓取图片
-        //User user = new User();
         if (null != student[14]) {
             File f = new File(student[14]);
             if (f.exists()) {
@@ -107,37 +104,7 @@ class LoginJWC extends Thread {
                 return;
             }
         }
-        /*try {
-            downloadImage();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         DownloadImage downloadImage = new DownloadImage(stuNum, stu);
         downloadImage.start();
     }
-
-    /*private void downloadImage() throws IOException {
-        OutputStream out = null;
-        InputStream in = null;
-        User user = new User();
-        File filePath = new File(PHOTOPATH+stuNum+EXT);
-        System.out.println(filePath);
-        URL url = new URL(photoUri + stuNum);
-        HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
-        httpUrlConnection.setRequestProperty("User-Agent", "Mozilla");
-        //TODO 这里不用带cookie也可以
-        //httpUrlConnection.addRequestProperty("Cookie",cookies.toString());
-        if (500 == httpUrlConnection.getResponseCode()) {
-            in = httpUrlConnection.getErrorStream();
-            out = new BufferedOutputStream(new FileOutputStream(filePath));
-            for (int b; (b = in.read()) != -1; ) {
-                out.write(b);
-            }
-            in.close();
-            out.close();
-            //刷新头像
-            stu.refreshImage(PHOTOPATH+stuNum+EXT);
-            user.updateImage(stuNum, PHOTOPATH+stuNum+EXT);
-        }
-    }*/
 }

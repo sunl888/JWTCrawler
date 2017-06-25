@@ -1,4 +1,4 @@
-package hello;
+package com.sunlong;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -8,9 +8,9 @@ import java.net.URL;
  * Created by Sunlong on 2017/6/25.
  */
 public class DownloadImage extends Thread {
-    public final String photoUri = "http://211.70.176.123/dbsdb/tp.asp?xh=";
-    public final String PHOTOPATH = "./photos/";
-    public final String EXT = ".png";
+    private final String PHOTOURI = "http://211.70.176.123/dbsdb/tp.asp?xh=";
+    private final String PHOTOPATH = "./photos/";
+    private final String EXT = ".png";
     private StudentInfoUI stuUI = null;
     private String stuNum = "";
 
@@ -25,10 +25,9 @@ public class DownloadImage extends Thread {
         InputStream in = null;
         User user = new User();
         File filePath = new File(PHOTOPATH + stuNum + EXT);
-        System.out.println(filePath);
         URL url = null;
         try {
-            url = new URL(photoUri + stuNum);
+            url = new URL(PHOTOURI + stuNum);
             HttpURLConnection httpUrlConnection = null;
             httpUrlConnection = (HttpURLConnection) url.openConnection();
             httpUrlConnection.setRequestProperty("User-Agent", "Mozilla");
@@ -55,10 +54,5 @@ public class DownloadImage extends Thread {
                 out = null;
             }
         }
-       /* try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
 }

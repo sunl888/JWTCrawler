@@ -1,4 +1,4 @@
-package hello;
+package com.sunlong;
 
 import java.sql.*;
 
@@ -26,8 +26,7 @@ public class User extends Thread {
         insert();
     }
 
-    public int insert() {
-        int i = 0;
+    public void insert() {
         String sql = "INSERT INTO `users`(`student_id`, `student_name`, `major`, `department`, `class`, `nation`, `place_of_origin`, `date_of_birth`, `political_outlook`, `id_card`, `examinee_number`, `cell_phone_number`, `password`) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         Connection cnn = getConn();
         try {
@@ -45,7 +44,7 @@ public class User extends Thread {
             preStmt.setString(11, "".equals(data[11]) ? null : data[11]);
             preStmt.setString(12, "".equals(data[12]) ? null : data[12]);
             preStmt.setString(13, "".equals(data[13]) ? null : data[13]);
-            i = preStmt.executeUpdate();
+            preStmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -57,7 +56,6 @@ public class User extends Thread {
                 cnn = null;
             }
         }
-        return i;
     }
 
     public String[] getStudent(String student_id) {
@@ -110,17 +108,15 @@ public class User extends Thread {
     public void updateImage(String studentNum, String filePath) {
         String res[] = getStudent(studentNum);
         String sql = "update users set photo='" + filePath + "' where student_id='" + studentNum.trim() + "'";
-        //System.out.println(sql);
         //判断数据库里有没有该学生信息
         String[] student = new User().getStudent(studentNum);
         if (null != student[1]) {
             Connection cnn = getConn();
             Statement stmt = null;
-            int rs = 0;
             try {
                 stmt = cnn.createStatement();
                 //这里因为是更新数据，所以不能使用executeQuery()来处理数据，而且更新数据返回值是一个int型而不是ResultSet
-                rs = stmt.executeUpdate(sql);
+                stmt.executeUpdate(sql);
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

@@ -1,4 +1,4 @@
-package hello;
+package com.sunlong;
 
 import javax.swing.*;
 import java.awt.*;
@@ -170,9 +170,6 @@ public class StudentInfoUI extends JFrame implements ActionListener {
     }
 
     protected void refreshImage(String data) {
-        if ("".equals(data)) {
-            data = "photos/1.gif";
-        }
         Image image = new ImageIcon(data).getImage();
         image = image.getScaledInstance(130, 160, 20);
         img.setIcon(new ImageIcon(image));

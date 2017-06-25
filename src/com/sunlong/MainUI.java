@@ -1,4 +1,4 @@
-package hello;
+package com.sunlong;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,6 @@ public class MainUI extends JFrame implements ActionListener {
     private final int TITLEWIDTH = 50;// 标题宽度
     private final int FILEDWIDTH = 150;// 字段宽度
     private final int HEIGHT = 30;// 字段高度
-    private final int DISTANCE = 10; // 两列之间的距离
 
     public static void main(String[] args) {
         MainUI mainUI = new MainUI();
@@ -73,7 +72,8 @@ public class MainUI extends JFrame implements ActionListener {
                 this.stuNum.requestFocus();//设置当前对象的stuNum字段焦点
             } else {
                 this.dispose();//关闭当前页面
-                new LoginJWC(stuNum.getText().toUpperCase(), idCard.getText().toUpperCase());
+                LoginJWC loginJWC = new LoginJWC(stuNum.getText().toUpperCase(), idCard.getText().toUpperCase());
+                loginJWC.start();
             }
         }
         if (e.getSource() == cancel) {
