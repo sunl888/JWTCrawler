@@ -19,7 +19,7 @@
 *.zip
 *.tar.gz
 *.rar
-/photos/*
+/photos/*.png
 .classpath
 /.settings
 /.project
