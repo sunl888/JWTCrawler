@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2017-06-25 00:23:25
+-- Generation Time: 2017-06-25 22:28:14
 -- 服务器版本： 5.7.18-log
 -- PHP Version: 7.1.6
 
@@ -39,7 +39,8 @@ CREATE TABLE `users` (
   `id_card` char(20) NOT NULL,
   `examinee_number` char(20) DEFAULT NULL,
   `cell_phone_number` char(11) DEFAULT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `photo` varchar(255) DEFAULT NULL COMMENT '图片路径'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
