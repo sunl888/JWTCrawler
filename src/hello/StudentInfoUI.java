@@ -124,7 +124,7 @@ public class StudentInfoUI extends JFrame implements ActionListener {
         this.setSize(480,500);
         //TODO 这里必须要先设置窗口的尺寸才可以居中
         setCenter(this);//or this.setLocationRelativeTo(null);
-        this.setResizable(false);//不显示最大化按钮
+        this.setResizable(true);//不显示最大化按钮
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }

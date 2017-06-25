@@ -1,6 +1,9 @@
 package hello;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
@@ -9,6 +12,7 @@ import java.util.regex.*;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import javax.swing.JOptionPane;
 
@@ -19,6 +23,7 @@ import javax.swing.JOptionPane;
 class LoginJWC extends Thread {
     private final String studentInfoUri = "http://211.70.176.123/wap/grxx.asp";
     private final String loginUri = "http://211.70.176.123/wap/index.asp";
+    private final String photoUri = "http://211.70.176.123/dbsdb/tp.asp?xh=";
     private String stuNum = "";
     private String idCard = "";
     private String regularExpression = "<font color=\"red\">(?<stuName>.+)</font><font[\\s\\S]+?专业[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<stuNum>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<major>.*)</td>[\\s\\S]+?班级</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<department>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<class>.*)</td>[\\s\\S]+?籍贯</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<familyName>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<place>.*)</td>[\\s\\S]+?政治面貌</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<birth>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<politicalStatus>.*)</td>[\\s\\S]+?高考考生号</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<idcard>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<examineeNumber>.*)</td>[\\s\\S]+?教务系统登陆密码</font></td>[\\s\\S]+?<td align=\"center\" width=\"170\" height=\"22\" valign=\"middle\">(?<phone>.*)</td>[\\s\\S]+?<td align=\"center\" width=\"150\" height=\"22\" valign=\"middle\">(?<jwtPassword>.*)</td>";
@@ -29,6 +34,8 @@ class LoginJWC extends Thread {
         stu = new StudentInfoUI();
         this.stuNum = stuNum;
         this.idCard = idCard;
+        //this.stuNum = "1508220224";
+        //this.idCard = "340881199507175311";
         //启动一个线程获取学生信息
         this.start();
     }
@@ -112,13 +119,42 @@ class LoginJWC extends Thread {
                 JOptionPane.showMessageDialog(null, "sorry,没有找到该学生");
                 stu.dispose();//关闭当前页面
                 new MainUI();
-                
             } else {
+                //写入数据库
                 User user = new User(student);
                 user.start();
             }
         }
+        //抓取图片
+        try {
+            downloadImage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //刷新视图
         stu.refreshData(student);
+    }
+
+    private void downloadImage() throws IOException {
+        OutputStream out = null;
+        InputStream in = null;
+        File filePath = new File("./photos/" + stuNum + ".png");
+        System.out.println(filePath);
+        URL url = new URL(photoUri + stuNum);
+        HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+        httpUrlConnection.setRequestProperty("User-Agent", "Mozilla");
+        //TODO 这里不用带cookie也可以通过
+        //httpUrlConnection.addRequestProperty("Cookie",cookies.toString());
+        if (500 == httpUrlConnection.getResponseCode()) {
+            in = httpUrlConnection.getErrorStream();
+            out = new BufferedOutputStream(new FileOutputStream(filePath));
+
+            for (int b; (b = in.read()) != -1; ) {
+                out.write(b);
+            }
+            in.close();
+            out.close();
+        }
+
     }
 }
